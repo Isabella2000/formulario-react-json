@@ -17,9 +17,7 @@ export async function action({ request }) {
 
   // Validacion de Email
   const email = formData.get("email");
-  let regex = new RegExp(
-    "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|[[\t -Z^-~]*])"
-  );
+  let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   if (!regex.test(email)) {
     errores.push("El Email no es valido");
   }
@@ -28,7 +26,6 @@ export async function action({ request }) {
   if (Object.keys(errores).length) {
     return errores;
   }
-
   await agregarCliente(datos);
 
   return redirect("/"); //se supone que el activeData no tiene como regla el retornar datos, sin embargo, como no retorne algo, tendre error, i dont have idea men
@@ -36,12 +33,11 @@ export async function action({ request }) {
 
 function NuevoCliente() {
   const errores = useActionData();
-  console.log(errores);
 
   const navigate = useNavigate();
   return (
     <>
-      <h1 className="font-black text-4xl text-blue-900">Nuevo Clientes</h1>
+      <h1 className="font-black text-4xl text-blue-900">Nuevo Cliente</h1>
       <p className="mt-3">
         Llena todos los campos para registrar un nuevo cliente
       </p>
@@ -57,8 +53,7 @@ function NuevoCliente() {
       </div>
 
       <div className="bg-white shadow rounded-md md:w-3/4 mx-auto px-5 py-10 mt-20">
-        {errores?.length &&
-          errores.map((error, i) => <Error key={i}>{error}</Error>)}
+        {errores?.length && errores.map((error, i) => <Error key={i}>{error}</Error>)}
         <Form method="post" noValidate>
           <Formulario />
           <input
